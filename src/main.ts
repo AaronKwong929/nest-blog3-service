@@ -13,12 +13,10 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     const options = new DocumentBuilder()
-        .setTitle(`nest的api文档`)
-        .setDescription(
-            `api docs created at ${new Date().toLocaleDateString()}`
-        )
-        .setVersion(`1.0`)
-        .build();
+    .setTitle(`Aaron: Blog3的api文档`)
+    .setDescription(`从 Koa.js 迁移到 Nest.js 的Api文档`)
+    .setVersion(`1.0`)
+    .build();
 
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api', app, document);
