@@ -8,7 +8,8 @@ async function bootstrap() {
     mongoose.connect(`mongodb://localhost/nestBlog`, {
         useNewUrlParser: true,
         useFindAndModify: false,
-        useCreateIndex: true
+        useCreateIndex: true,
+        useUnifiedTopology: true
     });
 
     const app = await NestFactory.create(AppModule);

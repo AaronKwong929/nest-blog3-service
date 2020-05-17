@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from './modules/admin/admin.module';
@@ -12,6 +12,12 @@ import { validatorMiddleware } from './modules/admin/admin.middleware';
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(validatorMiddleware).forRoutes(`admin`);
+        consumer
+            .apply(validatorMiddleware)
+            .exclude(
+                { path: `/admin/login`, method: RequestMethod.POST },
+                { path: `/admin/add`, method: RequestMethod.POST }
+            )
+            .forRoutes(`admin`);
     }
 }
