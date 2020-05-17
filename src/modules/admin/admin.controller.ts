@@ -1,6 +1,6 @@
-import { AdminDTO } from './admin.DTO';
+import { AdminDTO, ArticleIndexDTO, ArticleDTO } from './admin.DTO';
 import { AdminService } from './admin.service';
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query, Put, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @Controller('admin')
@@ -25,8 +25,29 @@ export class AdminController {
     // 获取文章列表
     @Get('article')
     @ApiOperation({ summary: `获取文章列表` })
-    getArticleIndex(): any {
-        return this.adminService.getArticleIndex();
+    getArticleIndex(@Query() articleDTO: ArticleIndexDTO): any {
+        return this.adminService.getArticleIndex(articleDTO);
+    }
+
+    // 新建文章
+    @Post(`article`)
+    @ApiOperation({summary: `新建文章`})
+    addArticle(): any {
+        return this.adminService.addArticle();
+    }
+
+    // 修改文章
+    @Put(`article`)
+    @ApiOperation({summary: `修改文章`})
+    updateArticle(articleDTO: ArticleDTO): any {
+        return this.adminService.updateArticle(articleDTO);
+    }
+
+    // 删除文章
+    @Delete(`article`)
+    @ApiOperation({summary: `删除文章`})
+    deleteArticle(@Query() id: string): any {
+        return this.adminService.deleteArticle(id);
     }
 
     // 获取文章详情

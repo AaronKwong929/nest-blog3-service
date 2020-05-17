@@ -6,7 +6,7 @@ import base from './base.model';
 })
 export class Article extends base{
     @prop({
-        required: true
+        default: `新建文章`
     })
     title!: string;
 
@@ -16,14 +16,14 @@ export class Article extends base{
     content!: string;
 
     @prop({
-        required: true
+        default: null
     })
-    type!: string;
+    type!: string | null;
 
     @prop({
-        required: true
+        default: null
     })
-    tag!: string;
+    tag!: string | null;
 
     @prop({
         default: false
