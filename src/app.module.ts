@@ -12,6 +12,6 @@ import { validatorMiddleware } from './modules/admin/admin.middleware';
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(validatorMiddleware).forRoutes(`admin`)
+        consumer.apply(validatorMiddleware).forRoutes(`admin`);
     }
 }

@@ -1,18 +1,19 @@
+import { encryptPassword } from './../helpers/encryption';
 import { Pre, prop, getModelForClass } from '@typegoose/typegoose';
-import { hash } from 'bcrypt';
+
 import base from './base.model';
 
-@Pre<Admin>(`save`, async function() {
+@Pre<Admin>(`save`, async function () {
     if (this.isModified(`password`)) {
-        this.password = await hash(this.password, 8);
+        this.password = await encryptPassword(this.password);
         this.updatedAt = new Date();
     }
 })
-export class Admin extends base{
+export class Admin extends base {
     @prop({
         required: true
     })
-    name!: string;
+    account!: string;
 
     @prop({
         required: true
