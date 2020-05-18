@@ -1,3 +1,4 @@
+import { StatusModel } from './../../models/status.model';
 import { createFailResponse } from './../../helpers/createFailResponse';
 import { CommentModel } from './../../models/comment.model';
 import { comparePassword } from './../../helpers/encryption';
@@ -9,7 +10,9 @@ import {
     AdminDTO,
     ArticleIndexDTO,
     ArticleDTO,
-    CommentIndexDTO
+    CommentIndexDTO,
+    CommentDTO,
+    StatusDTO
 } from './admin.DTO';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
@@ -151,7 +154,8 @@ export class AdminService {
     }
 
     // 隐藏 / 显示评论
-    async changeCommentStatus(commentId: string): Promise<responseDTO> {
+    async changeCommentStatus(commentDTO: CommentDTO): Promise<responseDTO> {
+        const { commentId } = commentDTO;
         try {
             const comment = await CommentModel.findById({ commentId });
             comment.published = !comment.published;
@@ -159,6 +163,58 @@ export class AdminService {
             return createSuccessResponse();
         } catch (e) {
             return createFailResponse(e, `显示 / 隐藏评论失败`);
+        }
+    }
+
+    // 删除评论
+    async deleteComment(commentId: string): Promise<responseDTO> {
+        try {
+            await CommentModel.findByIdAndDelete(commentId);
+            return createSuccessResponse({ message: `删除评论成功` });
+        } catch (e) {
+            return createFailResponse(e, `删除评论失败`);
+        }
+    }
+
+    // 获取动态
+    async getStatus(pageIndex: string | number): Promise<responseDTO> {
+        const pageSize = 10;
+        pageIndex = parseInt(pageIndex as string);
+        try {
+            const totalCount = await StatusModel.countDocuments(),
+                resultList = await StatusModel.find()
+                    .sort({ updatedAt: -1 })
+                    .select([`_id`, `updatedAt`, `content`])
+                    .limit(pageSize)
+                    .skip((pageIndex - 1) * pageSize);
+            return createSuccessResponse({
+                totalCount,
+                resultList,
+                message: `获取动态列表成功`
+            });
+        } catch (e) {
+            return createFailResponse(e, `获取动态列表失败`);
+        }
+    }
+
+    // 创建动态
+    async addStatus(statusDTO: StatusDTO): Promise<responseDTO> {
+        const status = new StatusModel(statusDTO);
+        try {
+            await status.save();
+            return createSuccessResponse({ message: `创建动态成功` });
+        } catch (e) {
+            return createFailResponse(e, `创建动态失败`);
+        }
+    }
+
+    // 删除动态
+    async deleteStatus(statusId: string): Promise<responseDTO> {
+        try {
+            await StatusModel.findByIdAndDelete(statusId);
+            return createSuccessResponse({ message: `删除动态成功` });
+        } catch (e) {
+            return createFailResponse(e, `删除动态失败`);
         }
     }
 }

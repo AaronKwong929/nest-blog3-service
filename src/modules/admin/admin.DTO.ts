@@ -131,3 +131,21 @@ export class CommentIndexDTO {
     })
     articleId!: string;
 }
+
+export class CommentDTO {
+    @ApiProperty({
+        description: `评论ID`,
+        type: String,
+        required: true
+    })
+    commentId!: string;
+}
+
+export class StatusDTO {
+    @ApiProperty({
+        description: `动态内容`,
+        type: String,
+        required: true
+    })
+    content!: string;
+}
