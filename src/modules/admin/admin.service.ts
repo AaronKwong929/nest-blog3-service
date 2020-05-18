@@ -217,4 +217,21 @@ export class AdminService {
             return createFailResponse(e, `删除动态失败`);
         }
     }
+
+    // 获取埋点日志
+    async getEventLog(pageIndex: string | number): Promise<responseDTO> {
+        pageIndex = parseInt(pageIndex as string);
+        const pageSize = 10;
+        try {
+            const totalCount = await StatusModel.countDocuments(),
+                resultList = await StatusModel.find()
+                    .select([`updatedAt`, `eventCode`])
+                    .sort({ updatedAt: -1 })
+                    .limit(pageSize)
+                    .skip((pageIndex - 1) * pageSize);
+            return createSuccessResponse({ totalCount, resultList });
+        } catch (e) {
+            return createFailResponse(e, `获取埋点日志失败`);
+        }
+    }
 }

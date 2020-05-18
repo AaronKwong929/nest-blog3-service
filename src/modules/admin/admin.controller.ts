@@ -113,4 +113,11 @@ export class AdminController {
     deleteStatus(@Query(`statusId`) statusId: string): any {
         return this, this.adminService.deleteStatus(statusId);
     }
+
+    // 获取埋点日志
+    @Get(`event`)
+    @ApiOperation({summary: `获取埋点日志`})
+    getEventLog(@Query(`pageIndex`) pageIndex: number): any {
+        return this.adminService.getEventLog(pageIndex);
+    }
 }
