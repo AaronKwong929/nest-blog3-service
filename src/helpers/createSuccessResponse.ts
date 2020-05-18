@@ -6,6 +6,7 @@ interface Data {
     pageSize?: number;
     articleId?: string;
     article?: any;
+    message?: string;
 }
 
 export const createSuccessResponse = (data?: Data): responseDTO => {

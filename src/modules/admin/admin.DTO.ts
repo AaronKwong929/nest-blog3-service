@@ -62,32 +62,72 @@ export class ArticleIndexDTO {
 }
 
 export class ArticleDTO {
-    // title type tag content
     @ApiProperty({
-        description: `文章标题`,
+        description: `文章ID`,
         type: String,
         required: true
     })
-    title: string;
+    _id?: string;
+
+    @ApiProperty({
+        description: `文章标题`,
+        type: String,
+        required: false
+    })
+    title?: string;
 
     @ApiProperty({
         description: `分类`,
         type: String,
-        required: true
+        required: false
     })
-    type: string;
+    type?: string;
 
     @ApiProperty({
         description: `标签`,
         type: String,
-        required: true
+        required: false
     })
-    tag: string;
+    tag?: string;
 
     @ApiProperty({
         description: `内容`,
         type: String,
+        required: false
+    })
+    content?: string;
+
+    @ApiProperty({
+        description: `状态`,
+        type: Boolean,
+        required: false
+    })
+    published?: boolean;
+}
+
+export class CommentIndexDTO {
+    @ApiProperty({
+        description: `当前页数`,
+        default: 1,
+        type: Number,
+        example: 1,
         required: true
     })
-    content: string;
+    pageIndex!: number | string;
+
+    @ApiProperty({
+        description: `页大小`,
+        default: 10,
+        type: Number,
+        example: 10,
+        required: true
+    })
+    pageSize!: number | string;
+
+    @ApiProperty({
+        description: `文章ID`,
+        type: String,
+        required: true
+    })
+    articleId!: string;
 }
