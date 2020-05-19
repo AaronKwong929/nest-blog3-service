@@ -11,7 +11,8 @@ import base from './base.model';
 })
 export class Admin extends base {
     @prop({
-        required: true
+        required: true,
+        unique: true
     })
     account!: string;
 

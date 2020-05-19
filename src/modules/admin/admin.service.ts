@@ -1,57 +1,31 @@
+import { eventLog } from './../../helpers/eventTrack';
 import { StatusModel } from './../../models/status.model';
 import { createFailResponse } from './../../helpers/createFailResponse';
 import { CommentModel } from './../../models/comment.model';
-import { comparePassword } from './../../helpers/encryption';
-import { responseDTO } from './../../helpers/index';
+import { responseDTO } from '../../helpers/types/index';
 import { ArticleModel } from './../../models/article.model';
 import { createSuccessResponse } from './../../helpers/createSuccessResponse';
-import { AdminModel } from './../../models/admin.model';
 import {
-    AdminDTO,
     ArticleIndexDTO,
     ArticleDTO,
     CommentIndexDTO,
-    CommentDTO,
     StatusDTO
 } from './admin.DTO';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AdminService {
-    // 添加管理员
-    async addAdmin(adminDTO: AdminDTO): Promise<responseDTO> {
-        try {
-            await AdminModel.create(adminDTO);
-            return createSuccessResponse();
-        } catch (e) {
-            return createFailResponse(e, `用户已存在`);
-        }
-    }
-
-    // 管理员登录
-    async login(adminDTO: AdminDTO): Promise<responseDTO> {
-        const { account, password } = adminDTO,
-            admin = await AdminModel.findOne({ account });
-        if (!admin) throw new UnauthorizedException({ message: `用户不存在` });
-        const compareResult = await comparePassword(password, admin.password);
-        if (!compareResult) {
-            throw new UnauthorizedException({ message: `密码错误` });
-        }
-        return createSuccessResponse();
-    }
-
     // 获取文章列表
     async getArticleIndex(
         articleIndexDTO: ArticleIndexDTO
     ): Promise<responseDTO> {
-        let { pageSize, pageIndex, type, tag, published } = articleIndexDTO;
-        const conditions = { type, tag, published },
+        console.log(`走了admin/article post`);
+        const { pageSize, pageIndex, type, tag, published } = articleIndexDTO,
+            conditions = { type, tag, published },
             query = {};
         // GET 请求带过来的参数类型会改变
         // pageIndex 和 pageSize的类型为 number | string， 再断言成string 进行parseInt
         // 只写 number 的话 ts推断成 number 不可以进行 parseInt
-        pageSize = parseInt(pageSize as string);
-        pageIndex = parseInt(pageIndex as string);
         Reflect.ownKeys(conditions).map(item => {
             conditions[item] && (query[item] = conditions[item]);
         });
@@ -69,30 +43,49 @@ export class AdminService {
                     .sort({ updatedAt: -1 })
                     .limit(pageSize)
                     .skip((pageIndex - 1) * pageSize);
-            return createSuccessResponse({ totalCount, resultList });
+            await eventLog(2001, 0);
+            return createSuccessResponse({
+                totalCount,
+                resultList,
+                message: `获取文章列表成功`
+            });
         } catch (e) {
+            await eventLog(2001, -1);
             return createFailResponse(e, `获取文章列表失败`);
         }
     }
+
     // 获取文章详情
     async getArticleDetails(id: string): Promise<responseDTO> {
         try {
             const article = await ArticleModel.findById(id);
-            return createSuccessResponse({ article });
+            await eventLog(2005, 0);
+            return createSuccessResponse({
+                article,
+                message: `获取文章列表成功`
+            });
         } catch (e) {
+            await eventLog(2005, -1);
             return createFailResponse(e, `不存在该文章`);
         }
     }
+
     // 新建文章
     async addArticle(): Promise<responseDTO> {
         const article = new ArticleModel();
         try {
             await article.save();
-            return createSuccessResponse({ articleId: article._id });
+            await eventLog(2004, 0);
+            return createSuccessResponse({
+                articleId: article._id,
+                message: `新建文章成功`
+            });
         } catch (e) {
+            eventLog(2004, -1);
             return createFailResponse(e, `新建文章失败`);
         }
     }
+
     // 修改文章
     async updateArticle(articleDTO: ArticleDTO): Promise<responseDTO> {
         const updateItem: ArticleDTO = {};
@@ -108,17 +101,36 @@ export class AdminService {
                 article[key] = others[key];
             }
             await article.save();
-            return createSuccessResponse();
+            await eventLog(2006, 0);
+            return createSuccessResponse({ message: `保存文章成功` });
         } catch (e) {
+            await eventLog(2006, -1);
             return createFailResponse(e, `保存文章失败`);
         }
     }
+
+    // 发布 / 撤回文章
+    async changeArticleStatus(articleId): Promise<responseDTO> {
+        try {
+            const article = await ArticleModel.findById(articleId);
+            article.published = !article.published;
+            await article.save();
+            await eventLog(2003, 0);
+            return createSuccessResponse({ message: `发布 / 撤回文章成功` });
+        } catch (e) {
+            await eventLog(2003, -1);
+            return createFailResponse(e, `发布 / 撤回文章失败`);
+        }
+    }
+
     // 删除文章
     async deleteArticle(id: string): Promise<responseDTO> {
         try {
             await ArticleModel.findByIdAndDelete(id);
+            await eventLog(2002, 0);
             return createSuccessResponse({ message: `删除文章成功` });
         } catch (e) {
+            await eventLog(2002, -1);
             return createFailResponse(e, `删除文章失败`);
         }
     }
@@ -127,9 +139,7 @@ export class AdminService {
     async getCommentIndex(
         commentIndexDTO: CommentIndexDTO
     ): Promise<responseDTO> {
-        let { pageIndex, pageSize, articleId } = commentIndexDTO;
-        pageIndex = parseInt(pageIndex as string);
-        pageSize = parseInt(pageSize as string);
+        const { pageIndex, pageSize, articleId } = commentIndexDTO;
         try {
             const totalCount = await CommentModel.countDocuments({ articleId }),
                 resultList = await CommentModel.find({ articleId })
@@ -143,25 +153,28 @@ export class AdminService {
                     .sort({ updatedAt: -1 })
                     .limit(pageSize)
                     .skip((pageIndex - 1) * pageSize);
+            await eventLog(3001, 0);
             return createSuccessResponse({
                 resultList,
                 totalCount,
                 message: `获取评论列表成功`
             });
         } catch (e) {
+            await eventLog(3001, -1);
             return createFailResponse(e, `获取评论列表失败`);
         }
     }
 
     // 隐藏 / 显示评论
-    async changeCommentStatus(commentDTO: CommentDTO): Promise<responseDTO> {
-        const { commentId } = commentDTO;
+    async changeCommentStatus(commentId: string): Promise<responseDTO> {
         try {
             const comment = await CommentModel.findById({ commentId });
             comment.published = !comment.published;
             await comment.save();
+            await eventLog(3003, 0);
             return createSuccessResponse();
         } catch (e) {
+            await eventLog(3003, -1);
             return createFailResponse(e, `显示 / 隐藏评论失败`);
         }
     }
@@ -170,8 +183,10 @@ export class AdminService {
     async deleteComment(commentId: string): Promise<responseDTO> {
         try {
             await CommentModel.findByIdAndDelete(commentId);
+            await eventLog(3002, 0);
             return createSuccessResponse({ message: `删除评论成功` });
         } catch (e) {
+            await eventLog(3002, -1);
             return createFailResponse(e, `删除评论失败`);
         }
     }
@@ -187,12 +202,14 @@ export class AdminService {
                     .select([`_id`, `updatedAt`, `content`])
                     .limit(pageSize)
                     .skip((pageIndex - 1) * pageSize);
+            await eventLog(4001, 0);
             return createSuccessResponse({
                 totalCount,
                 resultList,
                 message: `获取动态列表成功`
             });
         } catch (e) {
+            await eventLog(4001, -1);
             return createFailResponse(e, `获取动态列表失败`);
         }
     }
@@ -202,8 +219,10 @@ export class AdminService {
         const status = new StatusModel(statusDTO);
         try {
             await status.save();
+            await eventLog(4002, 0);
             return createSuccessResponse({ message: `创建动态成功` });
         } catch (e) {
+            await eventLog(4002, -1);
             return createFailResponse(e, `创建动态失败`);
         }
     }
@@ -212,8 +231,10 @@ export class AdminService {
     async deleteStatus(statusId: string): Promise<responseDTO> {
         try {
             await StatusModel.findByIdAndDelete(statusId);
+            await eventLog(4003, 0);
             return createSuccessResponse({ message: `删除动态成功` });
         } catch (e) {
+            await eventLog(4003, -1);
             return createFailResponse(e, `删除动态失败`);
         }
     }
@@ -229,8 +250,14 @@ export class AdminService {
                     .sort({ updatedAt: -1 })
                     .limit(pageSize)
                     .skip((pageIndex - 1) * pageSize);
-            return createSuccessResponse({ totalCount, resultList });
+            await eventLog(9999, 0);
+            return createSuccessResponse({
+                totalCount,
+                resultList,
+                message: `获取埋点日志成功`
+            });
         } catch (e) {
+            await eventLog(9999, -1);
             return createFailResponse(e, `获取埋点日志失败`);
         }
     }

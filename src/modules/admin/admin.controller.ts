@@ -1,9 +1,8 @@
+import { AuthGuard } from '../../auth/auth.admin.guard';
 import {
-    AdminDTO,
     ArticleIndexDTO,
     ArticleDTO,
     CommentIndexDTO,
-    CommentDTO,
     StatusDTO
 } from './admin.DTO';
 import { AdminService } from './admin.service';
@@ -15,32 +14,23 @@ import {
     Param,
     Query,
     Put,
-    Delete
+    Delete,
+    UseGuards,
+    Patch
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('admin')
+@UseGuards(AuthGuard)
+@ApiBearerAuth('authorization')
 @ApiTags('管理模块')
 export class AdminController {
     constructor(private readonly adminService: AdminService) {}
-    // 创建管理员账号
-    @Post('add')
-    @ApiOperation({ summary: `添加管理员` })
-    addAdmin(@Body() adminDTO: AdminDTO): any {
-        return this.adminService.addAdmin(adminDTO);
-    }
-
-    // 管理员登录
-    @Post(`login`)
-    @ApiOperation({ summary: `管理员登录` })
-    login(@Body() adminDTO: AdminDTO): any {
-        return this.adminService.login(adminDTO);
-    }
-
     // 获取文章列表
-    @Get('article')
+    @Post('/article/index')
     @ApiOperation({ summary: `获取文章列表` })
-    getArticleIndex(@Query() articleDTO: ArticleIndexDTO): any {
+    getArticleIndex(@Body() articleDTO: ArticleIndexDTO): any {
+        console.log(`controller`)
         return this.adminService.getArticleIndex(articleDTO);
     }
 
@@ -58,6 +48,13 @@ export class AdminController {
         return this.adminService.updateArticle(articleDTO);
     }
 
+    // 发布 / 撤回文章
+    @Patch(`article`)
+    @ApiOperation({ summary: `发布 / 撤回文章` })
+    changeArticleStatus(@Body(`articleId`) articleId: string): any {
+        return this.adminService.changeArticleStatus(articleId);
+    }
+
     // 删除文章
     @Delete(`article`)
     @ApiOperation({ summary: `删除文章` })
@@ -73,17 +70,17 @@ export class AdminController {
     }
 
     // 获取评论
-    @Get(`comment`)
+    @Post(`comment`)
     @ApiOperation({ summary: `获取评论列表` })
-    getCommentIndex(@Query() commentIndexDTO: CommentIndexDTO): any {
+    getCommentIndex(@Body() commentIndexDTO: CommentIndexDTO): any {
         return this.adminService.getCommentIndex(commentIndexDTO);
     }
 
     // 展示 / 隐藏评论
-    @Post(`comment`)
+    @Put(`comment`)
     @ApiOperation({ summary: `展示 / 隐藏评论` })
-    changeCommentStatus(@Body() commentDTO: CommentDTO): any {
-        return this.adminService.changeCommentStatus(commentDTO);
+    changeCommentStatus(@Body() commentId: string): any {
+        return this.adminService.changeCommentStatus(commentId);
     }
 
     // 删除评论
@@ -94,14 +91,14 @@ export class AdminController {
     }
 
     // 获取动态
-    @Get(`status`)
+    @Post(`status`)
     @ApiOperation({ summary: `获取动态列表` })
-    getStatus(@Query(`pageIndex`) pageIndex: number): any {
+    getStatus(@Body(`pageIndex`) pageIndex: number): any {
         return this.adminService.getStatus(pageIndex);
     }
 
     // 创建动态
-    @Post(`status`)
+    @Put(`status`)
     @ApiOperation({ summary: `创建动态` })
     addStatus(@Body() statusDTO: StatusDTO): any {
         return this.adminService.addStatus(statusDTO);
@@ -115,9 +112,9 @@ export class AdminController {
     }
 
     // 获取埋点日志
-    @Get(`event`)
-    @ApiOperation({summary: `获取埋点日志`})
-    getEventLog(@Query(`pageIndex`) pageIndex: number): any {
+    @Post(`event`)
+    @ApiOperation({ summary: `获取埋点日志` })
+    getEventLog(@Body(`pageIndex`) pageIndex: number): any {
         return this.adminService.getEventLog(pageIndex);
     }
 }

@@ -1,25 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
-
-export class AdminDTO {
-    @ApiProperty({
-        description: `管理员账号`,
-        required: true,
-        example: `abc`,
-        type: String
-    })
-    @IsNotEmpty({ message: `请输入管理员账号` })
-    account!: string;
-
-    @ApiProperty({
-        description: `管理员密码`,
-        required: true,
-        example: `123`,
-        type: String
-    })
-    @IsNotEmpty({ message: `请输入管理员密码` })
-    password!: string;
-}
+import { IsNotEmpty, IsNumber, IsString, IsBoolean } from 'class-validator';
 
 export class ArticleIndexDTO {
     @ApiProperty({
@@ -29,7 +9,8 @@ export class ArticleIndexDTO {
         example: 1,
         required: true
     })
-    pageIndex!: number | string;
+    @IsNumber()
+    pageIndex!: number;
 
     @ApiProperty({
         description: `页大小`,
@@ -38,7 +19,8 @@ export class ArticleIndexDTO {
         example: 10,
         required: true
     })
-    pageSize!: number | string;
+    @IsNumber()
+    pageSize!: number;
 
     @ApiProperty({
         description: `分类`,
@@ -67,6 +49,7 @@ export class ArticleDTO {
         type: String,
         required: true
     })
+    @IsString()
     _id?: string;
 
     @ApiProperty({
@@ -74,6 +57,7 @@ export class ArticleDTO {
         type: String,
         required: false
     })
+    @IsString()
     title?: string;
 
     @ApiProperty({
@@ -81,6 +65,7 @@ export class ArticleDTO {
         type: String,
         required: false
     })
+    @IsString()
     type?: string;
 
     @ApiProperty({
@@ -88,6 +73,7 @@ export class ArticleDTO {
         type: String,
         required: false
     })
+    @IsString()
     tag?: string;
 
     @ApiProperty({
@@ -95,6 +81,7 @@ export class ArticleDTO {
         type: String,
         required: false
     })
+    @IsString()
     content?: string;
 
     @ApiProperty({
@@ -102,6 +89,7 @@ export class ArticleDTO {
         type: Boolean,
         required: false
     })
+    @IsBoolean()
     published?: boolean;
 }
 
@@ -113,7 +101,9 @@ export class CommentIndexDTO {
         example: 1,
         required: true
     })
-    pageIndex!: number | string;
+    @IsNumber()
+    @IsNotEmpty()
+    pageIndex!: number;
 
     @ApiProperty({
         description: `页大小`,
@@ -122,24 +112,30 @@ export class CommentIndexDTO {
         example: 10,
         required: true
     })
-    pageSize!: number | string;
+    @IsNumber()
+    @IsNotEmpty()
+    pageSize!: number;
 
     @ApiProperty({
         description: `文章ID`,
         type: String,
         required: true
     })
+    @IsNotEmpty()
+    @IsString()
     articleId!: string;
 }
 
-export class CommentDTO {
-    @ApiProperty({
-        description: `评论ID`,
-        type: String,
-        required: true
-    })
-    commentId!: string;
-}
+// export class CommentDTO {
+//     @ApiProperty({
+//         description: `评论ID`,
+//         type: String,
+//         required: true
+//     })
+//     @IsNotEmpty()
+//     @IsString()
+//     commentId!: string;
+// }
 
 export class StatusDTO {
     @ApiProperty({
@@ -147,5 +143,7 @@ export class StatusDTO {
         type: String,
         required: true
     })
+    @IsNotEmpty()
+    @IsString()
     content!: string;
 }

@@ -6,6 +6,99 @@
 nest new nest-blog3-server -s
 ```
 
+## 有两种方法可以实现鉴权
+
+一种是中间件鉴权，注册在 app.module.ts，鉴权失败抛出 401 错误（这里可以自定义，可以 exclude 部分路由
+
+```ts
+// app.module.ts
+export class AppModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(validatorMiddleware)
+            .exclude(
+                { path: `/admin/login`, method: RequestMethod.POST },
+                { path: `/admin/add`, method: RequestMethod.POST }
+            )
+            .forRoutes(`admin`);
+    }
+}
+```
+
+```ts
+// admin.middleware.ts
+import {
+    Injectable,
+    NestMiddleware,
+    UnauthorizedException,
+    HttpStatus
+} from '@nestjs/common';
+import { Request } from 'express';
+
+@Injectable()
+export class validatorMiddleware implements NestMiddleware {
+    use(req: Request, res: Response, next: Function): void {
+        /**
+         * 这里写鉴权逻辑
+         */
+        next();
+    }
+}
+```
+
+另一种是路由守卫，注册在对应路由模块的 controller 下，鉴权失败返回 false，禁止访问路由，抛出 403 错误，(可以 throw 401 错误
+
+```ts
+// /src/auth/auth.guard.ts
+@Injectable()
+export class AuthGuard implements CanActivate {
+    canActivate(
+        context: ExecutionContext
+    ): boolean | Promise<boolean> | Observable<boolean> {
+        const request = context.switchToHttp().getRequest();
+        console.log(request.headers);
+        const {
+                route: { path }
+            } = request,
+            passValidateRoutes = [`/admin/login`, `/admin/add`];
+        if (passValidateRoutes.indexOf(path) > -1) return true;
+        /**
+         * 这里写鉴权逻辑
+         */
+        return false;
+    }
+}
+```
+
+```ts
+// 在控制器内使用
+// admin.controller.ts
+@Controller('admin')
+@UseGuards(AuthGuard)
+@ApiTags('管理模块')
+```
+
+### 埋点对应操作，eventStatus 0 为成功， -1 为失败
+
+| eventCode |     事件     |
+| :-------: | :----------: |
+|   1000    |     注册     |
+|   1001    |     登陆     |
+|   1002    |   更改密码   |
+|   2001    | 获取文章列表 |
+|   2002    |   删除文章   |
+|   2003    | 更改文章状态 |
+|   2004    |   新建文章   |
+|   2005    |   编辑文章   |
+|   2006    |   保存文章   |
+|   3001    | 获取评论列表 |
+|   3002    |   删除评论   |
+|   3003    | 更改评论状态 |
+|   4001    | 获取最近动态 |
+|   4002    | 新建最近动态 |
+|   4003    | 删除最近动态 |
+|   9999    | 查看操作日志 |
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>

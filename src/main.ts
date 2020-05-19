@@ -14,13 +14,17 @@ async function bootstrap() {
 
     const app = await NestFactory.create(AppModule);
 
-    app.useGlobalPipes(new ValidationPipe())
+    app.useGlobalPipes(new ValidationPipe());
 
     const options = new DocumentBuilder()
-    .setTitle(`Aaron: Blog3的api文档`)
-    .setDescription(`从 Koa.js 迁移到 Nest.js 的Api文档`)
-    .setVersion(`1.0`)
-    .build();
+        .setTitle(`Aaron: Blog3的api文档`)
+        .setDescription(`从 Koa.js 迁移到 Nest.js 的Api文档`)
+        .setVersion(`1.0`)
+        .addBearerAuth(
+            { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+            'authorization'
+        )
+        .build();
 
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('api', app, document);
