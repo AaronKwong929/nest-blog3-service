@@ -1,4 +1,4 @@
-import { responseDTO } from './types/index';
+import { ResponseDTO } from './types/index';
 interface Data {
     resultList?: any[];
     totalCount?: number;
@@ -10,9 +10,9 @@ interface Data {
     token?: string;
 }
 
-export const createSuccessResponse = (data: Data = {}): responseDTO => {
+export const createSuccessResponse = (data: Data = {}): ResponseDTO => {
     return {
-        status: 2,
+        status: 0,
         message: `操作成功`,
         data
     };

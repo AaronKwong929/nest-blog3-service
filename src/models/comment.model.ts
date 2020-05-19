@@ -1,9 +1,9 @@
 import { getModelForClass, prop, Pre } from '@typegoose/typegoose';
-import base from './base.model';
+import { Base } from './base.model';
 @Pre<Comment>(`save`, function() {
     this.updatedAt = new Date();
 })
-export class Comment extends base {
+export class Comment extends Base {
     @prop({
         trim: true,
         required: true

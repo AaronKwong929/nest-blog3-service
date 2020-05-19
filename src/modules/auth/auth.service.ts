@@ -1,7 +1,7 @@
 import { eventLog } from './../../helpers/eventTrack';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AdminDTO } from './auth.DTO';
-import { responseDTO } from 'src/helpers/types';
+import { ResponseDTO } from 'src/helpers/types';
 import { AdminModel } from 'src/models/admin.model';
 import { createSuccessResponse } from 'src/helpers/createSuccessResponse';
 import { createFailResponse } from 'src/helpers/createFailResponse';
@@ -11,7 +11,7 @@ import { JWT } from 'src/auth/auth.jwt';
 @Injectable()
 export class AuthService {
     // 添加管理员
-    async addAdmin(adminDTO: AdminDTO): Promise<responseDTO> {
+    async addAdmin(adminDTO: AdminDTO): Promise<ResponseDTO> {
         try {
             console.log(adminDTO);
             const { account } = adminDTO;
@@ -31,9 +31,9 @@ export class AuthService {
     }
 
     // 管理员登录
-    async login(adminDTO: AdminDTO): Promise<responseDTO> {
+    async login(adminDTO: AdminDTO): Promise<ResponseDTO> {
         const { account, password } = adminDTO,
-            admin = await AdminModel.findOne({ account })[0];
+            admin = await AdminModel.findOne({ account });
         if (!admin) {
             await eventLog(1001, -1);
             throw new UnauthorizedException({ message: `用户不存在` });
@@ -49,7 +49,7 @@ export class AuthService {
     }
 
     // 管理员修改密码
-    async changePassword(adminDTO: AdminDTO): Promise<responseDTO> {
+    async changePassword(adminDTO: AdminDTO): Promise<ResponseDTO> {
         const { account, password } = adminDTO;
         try {
             const admin = await AdminModel.findOne({ account });

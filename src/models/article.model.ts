@@ -1,10 +1,10 @@
 import { Pre, prop, getModelForClass } from '@typegoose/typegoose';
-import base from './base.model';
+import { Base } from './base.model';
 
-@Pre<Article>(`save`, function () {
+@Pre<Article>(`save`, function() {
     this.updatedAt = new Date();
 })
-export class Article extends base{
+export class Article extends Base {
     @prop({
         default: `新建文章`
     })

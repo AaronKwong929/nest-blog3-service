@@ -1,5 +1,5 @@
 import { salt } from './../configs/password';
-const crypto = require(`crypto`);
+import crypto = require('crypto');
 
 export const encryptPassword = (password: string): string => {
     return crypto.createHmac(`sha256`, salt).update(password).digest('hex');

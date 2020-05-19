@@ -1,9 +1,9 @@
+import { ArticleModel } from './../../models/article.model';
 import { StatusModel } from './../../models/status.model';
 import { CommentModel } from './../../models/comment.model';
 import { createSuccessResponse } from './../../helpers/createSuccessResponse';
-import { ArticleModel } from './../../../../demo1/src/article/article.model';
 import { createFailResponse } from './../../helpers/createFailResponse';
-import { responseDTO } from '../../helpers/types/index';
+import { ResponseDTO } from '../../helpers/types/index';
 import {
     CommonArticleIndexDTO,
     SendCommentDTO,
@@ -16,8 +16,8 @@ export class CommonService {
     // 获取文章
     async getArticleIndex(
         commonArticleIndexDTO: CommonArticleIndexDTO
-    ): Promise<responseDTO> {
-        console.log(commonArticleIndexDTO)
+    ): Promise<ResponseDTO> {
+        console.log(commonArticleIndexDTO);
         const published = true,
             { pageIndex, type, tag } = commonArticleIndexDTO,
             conditions = { type, tag, published },
@@ -39,7 +39,7 @@ export class CommonService {
     }
 
     // 获取文章详情
-    async getArticleDetails(articleId: string): Promise<responseDTO> {
+    async getArticleDetails(articleId: string): Promise<ResponseDTO> {
         try {
             const article = await ArticleModel.findById(articleId);
             return createSuccessResponse({
@@ -53,7 +53,7 @@ export class CommonService {
     // 获取评论
     async getArticleComment(
         commentContentDTO: CommentContentDTO
-    ): Promise<responseDTO> {
+    ): Promise<ResponseDTO> {
         const { articleId, pageIndex } = commentContentDTO,
             pageSize = 5;
         try {
@@ -79,7 +79,7 @@ export class CommonService {
         }
     }
     // 发布评论
-    async sendArticleComment(commentDTO: SendCommentDTO): Promise<responseDTO> {
+    async sendArticleComment(commentDTO: SendCommentDTO): Promise<ResponseDTO> {
         try {
             await CommentModel.create(commentDTO);
             return createSuccessResponse({ message: `发送评论成功` });
@@ -88,7 +88,7 @@ export class CommonService {
         }
     }
     // 获取状态
-    async getStatus(): Promise<responseDTO> {
+    async getStatus(): Promise<ResponseDTO> {
         try {
             const resultList = await StatusModel.find()
                 .select([`content`, `updatedAt`])

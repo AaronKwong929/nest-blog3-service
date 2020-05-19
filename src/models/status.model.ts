@@ -1,10 +1,10 @@
 import { getModelForClass, prop, Pre } from '@typegoose/typegoose';
-import base from './base.model';
+import { Base } from './base.model';
 
 @Pre<Status>(`save`, function() {
     this.updatedAt = new Date();
 })
-export class Status extends base {
+export class Status extends Base {
     @prop({
         required: true
     })

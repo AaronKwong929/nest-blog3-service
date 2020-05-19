@@ -2,7 +2,7 @@ import { eventLog } from './../../helpers/eventTrack';
 import { StatusModel } from './../../models/status.model';
 import { createFailResponse } from './../../helpers/createFailResponse';
 import { CommentModel } from './../../models/comment.model';
-import { responseDTO } from '../../helpers/types/index';
+import { ResponseDTO } from '../../helpers/types/index';
 import { ArticleModel } from './../../models/article.model';
 import { createSuccessResponse } from './../../helpers/createSuccessResponse';
 import {
@@ -18,7 +18,7 @@ export class AdminService {
     // 获取文章列表
     async getArticleIndex(
         articleIndexDTO: ArticleIndexDTO
-    ): Promise<responseDTO> {
+    ): Promise<ResponseDTO> {
         console.log(`走了admin/article post`);
         const { pageSize, pageIndex, type, tag, published } = articleIndexDTO,
             conditions = { type, tag, published },
@@ -56,7 +56,7 @@ export class AdminService {
     }
 
     // 获取文章详情
-    async getArticleDetails(id: string): Promise<responseDTO> {
+    async getArticleDetails(id: string): Promise<ResponseDTO> {
         try {
             const article = await ArticleModel.findById(id);
             await eventLog(2005, 0);
@@ -71,7 +71,7 @@ export class AdminService {
     }
 
     // 新建文章
-    async addArticle(): Promise<responseDTO> {
+    async addArticle(): Promise<ResponseDTO> {
         const article = new ArticleModel();
         try {
             await article.save();
@@ -87,7 +87,7 @@ export class AdminService {
     }
 
     // 修改文章
-    async updateArticle(articleDTO: ArticleDTO): Promise<responseDTO> {
+    async updateArticle(articleDTO: ArticleDTO): Promise<ResponseDTO> {
         const updateItem: ArticleDTO = {};
         // published: false 会被过滤
         Reflect.ownKeys(articleDTO).map(item => {
@@ -97,7 +97,7 @@ export class AdminService {
         const { _id, ...others } = updateItem;
         try {
             const article = await ArticleModel.findById(_id);
-            for (let key in others) {
+            for (const key in others) {
                 article[key] = others[key];
             }
             await article.save();
@@ -110,7 +110,7 @@ export class AdminService {
     }
 
     // 发布 / 撤回文章
-    async changeArticleStatus(articleId): Promise<responseDTO> {
+    async changeArticleStatus(articleId): Promise<ResponseDTO> {
         try {
             const article = await ArticleModel.findById(articleId);
             article.published = !article.published;
@@ -124,7 +124,7 @@ export class AdminService {
     }
 
     // 删除文章
-    async deleteArticle(id: string): Promise<responseDTO> {
+    async deleteArticle(id: string): Promise<ResponseDTO> {
         try {
             await ArticleModel.findByIdAndDelete(id);
             await eventLog(2002, 0);
@@ -138,7 +138,7 @@ export class AdminService {
     // 获取评论列表
     async getCommentIndex(
         commentIndexDTO: CommentIndexDTO
-    ): Promise<responseDTO> {
+    ): Promise<ResponseDTO> {
         const { pageIndex, pageSize, articleId } = commentIndexDTO;
         try {
             const totalCount = await CommentModel.countDocuments({ articleId }),
@@ -166,7 +166,7 @@ export class AdminService {
     }
 
     // 隐藏 / 显示评论
-    async changeCommentStatus(commentId: string): Promise<responseDTO> {
+    async changeCommentStatus(commentId: string): Promise<ResponseDTO> {
         try {
             const comment = await CommentModel.findById({ commentId });
             comment.published = !comment.published;
@@ -180,7 +180,7 @@ export class AdminService {
     }
 
     // 删除评论
-    async deleteComment(commentId: string): Promise<responseDTO> {
+    async deleteComment(commentId: string): Promise<ResponseDTO> {
         try {
             await CommentModel.findByIdAndDelete(commentId);
             await eventLog(3002, 0);
@@ -192,7 +192,7 @@ export class AdminService {
     }
 
     // 获取动态
-    async getStatus(pageIndex: string | number): Promise<responseDTO> {
+    async getStatus(pageIndex: string | number): Promise<ResponseDTO> {
         const pageSize = 10;
         pageIndex = parseInt(pageIndex as string);
         try {
@@ -215,7 +215,7 @@ export class AdminService {
     }
 
     // 创建动态
-    async addStatus(statusDTO: StatusDTO): Promise<responseDTO> {
+    async addStatus(statusDTO: StatusDTO): Promise<ResponseDTO> {
         const status = new StatusModel(statusDTO);
         try {
             await status.save();
@@ -228,7 +228,7 @@ export class AdminService {
     }
 
     // 删除动态
-    async deleteStatus(statusId: string): Promise<responseDTO> {
+    async deleteStatus(statusId: string): Promise<ResponseDTO> {
         try {
             await StatusModel.findByIdAndDelete(statusId);
             await eventLog(4003, 0);
@@ -240,7 +240,7 @@ export class AdminService {
     }
 
     // 获取埋点日志
-    async getEventLog(pageIndex: string | number): Promise<responseDTO> {
+    async getEventLog(pageIndex: string | number): Promise<ResponseDTO> {
         pageIndex = parseInt(pageIndex as string);
         const pageSize = 10;
         try {

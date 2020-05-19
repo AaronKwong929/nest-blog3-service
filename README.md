@@ -99,6 +99,12 @@ export class AuthGuard implements CanActivate {
 |   4003    | 删除最近动态 |
 |   9999    | 查看操作日志 |
 
+## 注意事项
+
+1. 如果发现代码见鬼了：swagger 不更新，挂载路由不更新 ---> 把 /dist 文件夹删掉重新起服务即可
+
+2. 需要引入 Node 原生模块的话，需要 1. npm install --save-dev @types/node，tsconfig.json 2. 将 target 改成大于 es2017（网上说的） 然后在 const xxx = require('xxx') 改成 import xxx = require('xxx')即可
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>

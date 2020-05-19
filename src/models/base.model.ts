@@ -1,6 +1,6 @@
 import { prop } from '@typegoose/typegoose';
 
-export default abstract class base {
+export abstract class Base {
     @prop({
         default: new Date()
     })
