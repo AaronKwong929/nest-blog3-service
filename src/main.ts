@@ -1,34 +1,22 @@
+import { swaggerOptions } from './configs/swagger';
+import { mongoServer, mongoConfigs } from './configs/mongo';
+import { corsConfigs } from './configs/cors';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import * as mongoose from 'mongoose';
 import { ValidationPipe } from '@nestjs/common';
+import * as compression from 'compression';
 
 async function bootstrap() {
-    mongoose.connect(`mongodb://localhost/nestBlog`, {
-        useNewUrlParser: true,
-        useFindAndModify: false,
-        useCreateIndex: true,
-        useUnifiedTopology: true
-    });
-
+    mongoose.connect(mongoServer, mongoConfigs);
     const app = await NestFactory.create(AppModule);
-
     app.useGlobalPipes(new ValidationPipe());
-
-    const options = new DocumentBuilder()
-        .setTitle(`Aaron: Blog4 的api文档`)
-        .setDescription(`从 Koa.js 迁移到 Nest.js 的Api文档`)
-        .setVersion(`1.0`)
-        .addBearerAuth(
-            { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-            'authorization'
-        )
-        .build();
-
-    const document = SwaggerModule.createDocument(app, options);
+    const document = SwaggerModule.createDocument(app, swaggerOptions);
     SwaggerModule.setup('api', app, document);
-
+    app.use(compression());
+    app.enableCors(corsConfigs);
     await app.listen(3000);
 }
+
 bootstrap();
