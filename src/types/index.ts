@@ -33,7 +33,7 @@ export class RoleDTO {
     @ApiProperty({
         description: `用户账号`,
         required: true,
-        example: `member1`,
+        example: ``,
         type: String
     })
     @IsNotEmpty({ message: `请输入用户账号` })
@@ -43,7 +43,7 @@ export class RoleDTO {
     @ApiProperty({
         description: `管理员密码`,
         required: true,
-        example: `123456`,
+        example: ``,
         type: String
     })
     @IsNotEmpty({ message: `请输入管理员密码` })

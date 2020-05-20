@@ -30,7 +30,7 @@ export class CommonController {
     getArticleComment(@Body() commentContentDTO: CommentContentDTO): any {
         return this.commonService.getArticleComment(commentContentDTO);
     }
-
+    
     @Put(`comment`)
     @UseGuards(MemberAuthGuard)
     @ApiBearerAuth('authorization')

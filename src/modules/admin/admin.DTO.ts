@@ -1,27 +1,8 @@
+import { CommonIndexDTO } from './../../types/index';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString, IsBoolean } from 'class-validator';
 
-export class ArticleIndexDTO {
-    @ApiProperty({
-        description: `当前页数`,
-        default: 1,
-        type: Number,
-        example: 1,
-        required: true
-    })
-    @IsNumber()
-    pageIndex!: number;
-
-    @ApiProperty({
-        description: `页大小`,
-        default: 10,
-        type: Number,
-        example: 10,
-        required: true
-    })
-    @IsNumber()
-    pageSize!: number;
-
+export class ArticleIndexDTO extends CommonIndexDTO {
     @ApiProperty({
         description: `分类`,
         required: false,
@@ -93,29 +74,7 @@ export class ArticleDTO {
     published?: boolean;
 }
 
-export class CommentIndexDTO {
-    @ApiProperty({
-        description: `当前页数`,
-        default: 1,
-        type: Number,
-        example: 1,
-        required: true
-    })
-    @IsNumber()
-    @IsNotEmpty()
-    pageIndex!: number;
-
-    @ApiProperty({
-        description: `页大小`,
-        default: 10,
-        type: Number,
-        example: 10,
-        required: true
-    })
-    @IsNumber()
-    @IsNotEmpty()
-    pageSize!: number;
-
+export class CommentIndexDTO extends CommonIndexDTO {
     @ApiProperty({
         description: `文章ID`,
         type: String,
@@ -125,17 +84,6 @@ export class CommentIndexDTO {
     @IsString()
     articleId!: string;
 }
-
-// export class CommentDTO {
-//     @ApiProperty({
-//         description: `评论ID`,
-//         type: String,
-//         required: true
-//     })
-//     @IsNotEmpty()
-//     @IsString()
-//     commentId!: string;
-// }
 
 export class StatusDTO {
     @ApiProperty({

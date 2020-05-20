@@ -1,27 +1,8 @@
+import { CommonIndexDTO } from './../../types/index';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
-export class CommonArticleIndexDTO {
-    @ApiProperty({
-        description: `当前页数`,
-        default: 1,
-        type: Number,
-        example: 1,
-        required: true
-    })
-    @IsNumber()
-    pageIndex!: number;
-
-    @ApiProperty({
-        description: `页大小`,
-        default: 10,
-        type: Number,
-        example: 10,
-        required: true
-    })
-    @IsNumber()
-    pageSize!: number;
-
+export class CommonArticleIndexDTO extends CommonIndexDTO {
     @ApiProperty({
         description: `分类`,
         required: false,
@@ -38,16 +19,7 @@ export class CommonArticleIndexDTO {
 }
 
 // 获取评论列表 DTO
-export class CommentContentDTO {
-    @ApiProperty({
-        description: `当前页码`,
-        required: true,
-        default: 1,
-        type: Number
-    })
-    @IsNumber()
-    pageIndex!: number;
-
+export class CommentContentDTO extends CommonIndexDTO {
     @ApiProperty({
         description: `文章ID`,
         required: true,

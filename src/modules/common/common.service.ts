@@ -52,8 +52,7 @@ export class CommonService {
     async getArticleComment(
         commentContentDTO: CommentContentDTO
     ): Promise<ResponseDTO> {
-        const { articleId, pageIndex } = commentContentDTO,
-            pageSize = 5;
+        const { articleId, pageIndex, pageSize } = commentContentDTO;
         try {
             const totalCount = await CommentModel.countDocuments({
                     articleId,
