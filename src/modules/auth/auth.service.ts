@@ -13,11 +13,10 @@ export class AuthService {
     // 添加管理员
     async addAdmin(adminDTO: AdminDTO): Promise<ResponseDTO> {
         try {
-            console.log(adminDTO);
+            
             const { account } = adminDTO;
-
             const admin = await AdminModel.find({ account });
-            console.log(admin);
+            
             if (admin && admin.length > 0) {
                 throw new Error();
             }
@@ -60,6 +59,29 @@ export class AuthService {
         } catch (e) {
             await eventLog(1002, -1);
             return createFailResponse(e, `修改密码失败`);
+        }
+    }
+
+    // 获取管理员列表
+    async getAdminIndex(): Promise<ResponseDTO> {
+        try {
+            const totalCount = await AdminModel.countDocuments(),
+                resultList = await AdminModel.find()
+                    .select([`account`, `createdAt`, `updatedAt`])
+                    .sort({ updatedAt: 1 });
+            return createSuccessResponse({ totalCount, resultList });
+        } catch (e) {
+            return createFailResponse(e, `获取管理员列表失败`);
+        }
+    }
+
+    // 删除管理员
+    async deleteAdmin(adminId: string): Promise<ResponseDTO> {
+        try {
+            await AdminModel.findByIdAndDelete(adminId);
+            return createSuccessResponse({ message: `删除成功` });
+        } catch (e) {
+            return createFailResponse(e, `删除失败`);
         }
     }
 }

@@ -30,7 +30,6 @@ export class AdminController {
     @Post('/article/index')
     @ApiOperation({ summary: `获取文章列表` })
     getArticleIndex(@Body() articleDTO: ArticleIndexDTO): any {
-        console.log(`controller`)
         return this.adminService.getArticleIndex(articleDTO);
     }
 

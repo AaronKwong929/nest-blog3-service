@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { Controller, Body, Post } from '@nestjs/common';
+import { Controller, Body, Post, Get, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AdminDTO } from './auth.DTO';
 
@@ -11,7 +11,6 @@ export class AuthController {
     @Post('add')
     @ApiOperation({ summary: `添加管理员` })
     addAdmin(@Body() adminDTO: AdminDTO): any {
-        console.log(`controller`, adminDTO);
         return this.authService.addAdmin(adminDTO);
     }
 
@@ -27,5 +26,19 @@ export class AuthController {
     @ApiOperation({ summary: `管理员修改密码` })
     changePWD(@Body() adminDTO: AdminDTO): any {
         return this.authService.changePassword(adminDTO);
+    }
+
+    // 删除管理员
+    @Delete(`admin`)
+    @ApiOperation({ summary: `删除管理员` })
+    deleteAdmin(@Query(`id`) adminId: string): any {
+        return this.authService.deleteAdmin(adminId);
+    }
+
+    // 获取管理员列表
+    @Get(`admin/index`)
+    @ApiOperation({ summary: `获取管理员列表` })
+    getAdminIndex(): any {
+        return this.authService.getAdminIndex();
     }
 }

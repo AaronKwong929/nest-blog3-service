@@ -19,7 +19,6 @@ export class AdminService {
     async getArticleIndex(
         articleIndexDTO: ArticleIndexDTO
     ): Promise<ResponseDTO> {
-        console.log(`走了admin/article post`);
         const { pageSize, pageIndex, type, tag, published } = articleIndexDTO,
             conditions = { type, tag, published },
             query = {};

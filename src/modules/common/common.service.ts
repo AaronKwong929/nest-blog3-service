@@ -17,7 +17,6 @@ export class CommonService {
     async getArticleIndex(
         commonArticleIndexDTO: CommonArticleIndexDTO
     ): Promise<ResponseDTO> {
-        console.log(commonArticleIndexDTO);
         const published = true,
             { pageIndex, type, tag } = commonArticleIndexDTO,
             conditions = { type, tag, published },
