@@ -1,4 +1,4 @@
-import { ResponseDTO } from './types/index';
+import { ResponseDTO } from '../types/index';
 export const createFailResponse = (
     data: any = {},
     message = `No message available.`

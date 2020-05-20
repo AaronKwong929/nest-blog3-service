@@ -1,4 +1,4 @@
-import { JWT } from './auth.jwt';
+import { JWTAdmin } from './auth.jwt';
 import {
     Injectable,
     CanActivate,
@@ -8,7 +8,7 @@ import {
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AdminAuthGuard implements CanActivate {
     canActivate(
         context: ExecutionContext
     ): boolean | Promise<boolean> | Observable<boolean> {
@@ -20,10 +20,12 @@ export class AuthGuard implements CanActivate {
             passValidateRoutes = [`/admin/login`, `/admin/add`];
         if (passValidateRoutes.indexOf(path) > -1) return true;
         try {
-            JWT.verify((authorization as string).split(' ')[1]);
+            JWTAdmin.verify((authorization as string).split(' ')[1]);
             return true;
         } catch (e) {
             throw new UnauthorizedException({ message: `授权信息过期` });
         }
     }
 }
+
+

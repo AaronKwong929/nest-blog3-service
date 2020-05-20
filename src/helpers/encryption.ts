@@ -1,3 +1,4 @@
+import { Role } from '../types/index';
 import { adminSalt, memberSalt } from './../configs/password';
 import crypto = require('crypto');
 
@@ -10,8 +11,8 @@ const encrypt = (pwd: string, salt: string): string => {
 
 // 重载加密方法
 export function encryptPassword(password: string): string;
-export function encryptPassword(password: string, type: string): string;
-export function encryptPassword(password: string, type?: string): string {
+export function encryptPassword(password: string, type: Role): string;
+export function encryptPassword(password: string, type?: Role): string {
     if (typeof type === 'undefined') {
         return encrypt(password, adminSalt);
     } else {
@@ -28,12 +29,12 @@ export function comparePassword(pwd1: string, pwd2: string): boolean;
 export function comparePassword(
     pwd1: string,
     pwd2: string,
-    type: string
+    type: Role
 ): boolean;
 export function comparePassword(
     pwd1: string,
     pwd2: string,
-    type?: string
+    type?: Role
 ): boolean {
     if (typeof type === 'undefined') {
         const target = encryptPassword(pwd1);

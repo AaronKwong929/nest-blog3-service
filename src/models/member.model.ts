@@ -1,11 +1,10 @@
 import { encryptPassword } from './../helpers/encryption';
 import { Pre, prop, getModelForClass } from '@typegoose/typegoose';
-
 import { Base } from './base.model';
 
 @Pre<Member>(`save`, async function() {
     if (this.isModified(`password`)) {
-        this.password = await encryptPassword(this.password);
+        this.password = await encryptPassword(this.password, `member`);
         this.updatedAt = new Date();
     }
 })

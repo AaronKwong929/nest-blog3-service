@@ -1,6 +1,7 @@
+import { MemberAuthGuard } from './../../auth/auth.member.guard';
 import { CommonService } from './common.service';
-import { Controller, Post, Body, Put } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Post, Body, Put, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import {
     CommonArticleIndexDTO,
     SendCommentDTO,
@@ -31,6 +32,8 @@ export class CommonController {
     }
 
     @Put(`comment`)
+    @UseGuards(MemberAuthGuard)
+    @ApiBearerAuth('authorization')
     @ApiOperation({ summary: `发送评论` })
     sendArticleComment(@Body() sendCommentDTO: SendCommentDTO): any {
         return this.commonService.sendArticleComment(sendCommentDTO);

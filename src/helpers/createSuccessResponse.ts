@@ -1,4 +1,4 @@
-import { ResponseDTO } from './types/index';
+import { ResponseDTO } from '../types/index';
 interface Data {
     resultList?: any[];
     totalCount?: number;

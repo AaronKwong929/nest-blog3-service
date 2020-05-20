@@ -2,7 +2,7 @@ import { eventLog } from './../../helpers/eventTrack';
 import { StatusModel } from './../../models/status.model';
 import { createFailResponse } from './../../helpers/createFailResponse';
 import { CommentModel } from './../../models/comment.model';
-import { ResponseDTO } from '../../helpers/types/index';
+import { ResponseDTO } from '../../types/index';
 import { ArticleModel } from './../../models/article.model';
 import { createSuccessResponse } from './../../helpers/createSuccessResponse';
 import {
@@ -53,7 +53,6 @@ export class AdminService {
             return createFailResponse(e, `获取文章列表失败`);
         }
     }
-
     // 获取文章详情
     async getArticleDetails(id: string): Promise<ResponseDTO> {
         try {
@@ -68,7 +67,6 @@ export class AdminService {
             return createFailResponse(e, `不存在该文章`);
         }
     }
-
     // 新建文章
     async addArticle(): Promise<ResponseDTO> {
         const article = new ArticleModel();
@@ -84,7 +82,6 @@ export class AdminService {
             return createFailResponse(e, `新建文章失败`);
         }
     }
-
     // 修改文章
     async updateArticle(articleDTO: ArticleDTO): Promise<ResponseDTO> {
         const updateItem: ArticleDTO = {};
@@ -107,7 +104,6 @@ export class AdminService {
             return createFailResponse(e, `保存文章失败`);
         }
     }
-
     // 发布 / 撤回文章
     async changeArticleStatus(articleId): Promise<ResponseDTO> {
         try {
@@ -121,7 +117,6 @@ export class AdminService {
             return createFailResponse(e, `发布 / 撤回文章失败`);
         }
     }
-
     // 删除文章
     async deleteArticle(id: string): Promise<ResponseDTO> {
         try {
@@ -133,7 +128,6 @@ export class AdminService {
             return createFailResponse(e, `删除文章失败`);
         }
     }
-
     // 获取评论列表
     async getCommentIndex(
         commentIndexDTO: CommentIndexDTO
@@ -163,7 +157,6 @@ export class AdminService {
             return createFailResponse(e, `获取评论列表失败`);
         }
     }
-
     // 隐藏 / 显示评论
     async changeCommentStatus(commentId: string): Promise<ResponseDTO> {
         try {
@@ -177,7 +170,6 @@ export class AdminService {
             return createFailResponse(e, `显示 / 隐藏评论失败`);
         }
     }
-
     // 删除评论
     async deleteComment(commentId: string): Promise<ResponseDTO> {
         try {
@@ -189,7 +181,6 @@ export class AdminService {
             return createFailResponse(e, `删除评论失败`);
         }
     }
-
     // 获取动态
     async getStatus(pageIndex: string | number): Promise<ResponseDTO> {
         const pageSize = 10;
@@ -212,7 +203,6 @@ export class AdminService {
             return createFailResponse(e, `获取动态列表失败`);
         }
     }
-
     // 创建动态
     async addStatus(statusDTO: StatusDTO): Promise<ResponseDTO> {
         const status = new StatusModel(statusDTO);
@@ -225,7 +215,6 @@ export class AdminService {
             return createFailResponse(e, `创建动态失败`);
         }
     }
-
     // 删除动态
     async deleteStatus(statusId: string): Promise<ResponseDTO> {
         try {
@@ -237,7 +226,6 @@ export class AdminService {
             return createFailResponse(e, `删除动态失败`);
         }
     }
-
     // 获取埋点日志
     async getEventLog(pageIndex: string | number): Promise<ResponseDTO> {
         pageIndex = parseInt(pageIndex as string);

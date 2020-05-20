@@ -3,7 +3,7 @@ import { StatusModel } from './../../models/status.model';
 import { CommentModel } from './../../models/comment.model';
 import { createSuccessResponse } from './../../helpers/createSuccessResponse';
 import { createFailResponse } from './../../helpers/createFailResponse';
-import { ResponseDTO } from '../../helpers/types/index';
+import { ResponseDTO } from '../../types/index';
 import {
     CommonArticleIndexDTO,
     SendCommentDTO,
@@ -36,7 +36,6 @@ export class CommonService {
             totalCount
         });
     }
-
     // 获取文章详情
     async getArticleDetails(articleId: string): Promise<ResponseDTO> {
         try {
