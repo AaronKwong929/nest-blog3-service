@@ -1,8 +1,8 @@
-import { CommonIndexDTO } from './../../types/index';
+import { IndexDTO } from './../../types/index';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, IsBoolean } from 'class-validator';
+import { IsNotEmpty, IsString, IsBoolean } from 'class-validator';
 
-export class ArticleIndexDTO extends CommonIndexDTO {
+export class ArticleIndexDTO extends IndexDTO {
     @ApiProperty({
         description: `分类`,
         required: false,
@@ -74,7 +74,7 @@ export class ArticleDTO {
     published?: boolean;
 }
 
-export class CommentIndexDTO extends CommonIndexDTO {
+export class CommentIndexDTO extends IndexDTO {
     @ApiProperty({
         description: `文章ID`,
         type: String,

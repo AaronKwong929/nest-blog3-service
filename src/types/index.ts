@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString, IsNotEmpty } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
 export interface ResponseDTO {
     status: number;
@@ -9,7 +9,7 @@ export interface ResponseDTO {
 
 export type Role = `admin` | `member`;
 
-export class CommonIndexDTO {
+export abstract class IndexDTO {
     @ApiProperty({
         description: `当前页数`,
         required: true,
@@ -29,24 +29,20 @@ export class CommonIndexDTO {
     pageSize!: number;
 }
 
-export class RoleDTO {
+export abstract class RoleDTO {
     @ApiProperty({
         description: `用户账号`,
         required: true,
         example: ``,
         type: String
     })
-    @IsNotEmpty({ message: `请输入用户账号` })
-    @IsString({ message: `账号必须为字符串` })
     account!: string;
 
     @ApiProperty({
-        description: `管理员密码`,
+        description: `密码`,
         required: true,
         example: ``,
         type: String
     })
-    @IsNotEmpty({ message: `请输入管理员密码` })
-    @IsString({ message: `密码必须为字符串` })
     password!: string;
 }
