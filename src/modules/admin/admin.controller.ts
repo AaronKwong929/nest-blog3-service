@@ -45,16 +45,16 @@ export class AdminController {
         return this.adminService.updateArticle(articleDTO);
     }
     // 发布 / 撤回文章
-    @Patch(`article`)
+    @Get(`article/status`)
     @ApiOperation({ summary: `发布 / 撤回文章` })
-    changeArticleStatus(@Body(`articleId`) articleId: string): any {
+    changeArticleStatus(@Query('id') articleId: string): any {
         return this.adminService.changeArticleStatus(articleId);
     }
     // 删除文章
     @Delete(`article`)
     @ApiOperation({ summary: `删除文章` })
-    deleteArticle(@Query() id: string): any {
-        return this.adminService.deleteArticle(id);
+    deleteArticle(@Query('id') articleId: string): any {
+        return this.adminService.deleteArticle(articleId);
     }
     // 获取文章详情
     @Get('article/:id')

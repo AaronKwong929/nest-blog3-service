@@ -105,7 +105,7 @@ export class AdminService {
         }
     }
     // 发布 / 撤回文章
-    async changeArticleStatus(articleId): Promise<ResponseDTO> {
+    async changeArticleStatus(articleId: string): Promise<ResponseDTO> {
         try {
             const article = await ArticleModel.findById(articleId);
             article.published = !article.published;
