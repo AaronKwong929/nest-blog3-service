@@ -1,6 +1,6 @@
 import { IndexDTO } from './../../types/index';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsBoolean } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class ArticleIndexDTO extends IndexDTO {
     @ApiProperty({
@@ -63,13 +63,6 @@ export class ArticleDetailsDTO extends ArticleDTO {
     })
     @IsString()
     content?: string;
-
-    // @ApiProperty({
-    //     description: `状态`,
-        
-    //     required: false
-    // })
-    // published?: boolean | null;
 }
 
 export class CommentDTO {
