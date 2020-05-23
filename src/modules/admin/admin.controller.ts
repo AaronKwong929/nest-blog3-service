@@ -2,8 +2,11 @@ import { AdminAuthGuard } from '../../auth/auth.admin.guard';
 import {
     ArticleIndexDTO,
     ArticleDTO,
+    ArticleDetailsDTO,
+    CommentDTO,
     CommentIndexDTO,
-    StatusDTO
+    StatusDTO,
+    EventTrackDTO
 } from './admin.DTO';
 import { AdminService } from './admin.service';
 import {
@@ -15,8 +18,7 @@ import {
     Query,
     Put,
     Delete,
-    UseGuards,
-    Patch
+    UseGuards
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -39,28 +41,28 @@ export class AdminController {
         return this.adminService.addArticle();
     }
     // 修改文章
-    @Put(`article`)
+    @Put(`draft`)
     @ApiOperation({ summary: `修改文章` })
-    updateArticle(@Body() articleDTO: ArticleDTO): any {
-        return this.adminService.updateArticle(articleDTO);
+    updateArticle(@Body() articleDetailsDTO: ArticleDetailsDTO): any {
+        return this.adminService.updateArticle(articleDetailsDTO);
     }
     // 发布 / 撤回文章
-    @Get(`article/status`)
+    @Put(`article/status`)
     @ApiOperation({ summary: `发布 / 撤回文章` })
-    changeArticleStatus(@Query('id') articleId: string): any {
-        return this.adminService.changeArticleStatus(articleId);
+    changeArticleStatus(@Body() articleDTO: ArticleDTO): any {
+        return this.adminService.changeArticleStatus(articleDTO);
     }
     // 删除文章
     @Delete(`article`)
     @ApiOperation({ summary: `删除文章` })
-    deleteArticle(@Query('id') articleId: string): any {
+    deleteArticle(@Query('articleId') articleId: string): any {
         return this.adminService.deleteArticle(articleId);
     }
     // 获取文章详情
-    @Get('article/:id')
+    @Get('article')
     @ApiOperation({ summary: `获取文章详情` })
-    getArticleDetails(@Param(`id`) id: string): any {
-        return this.adminService.getArticleDetails(id);
+    getArticleDetails(@Query(`articleId`) articleId: string): any {
+        return this.adminService.getArticleDetails(articleId);
     }
     // 获取评论
     @Post(`comment`)
@@ -71,20 +73,20 @@ export class AdminController {
     // 展示 / 隐藏评论
     @Put(`comment`)
     @ApiOperation({ summary: `展示 / 隐藏评论` })
-    changeCommentStatus(@Body() commentId: string): any {
-        return this.adminService.changeCommentStatus(commentId);
+    changeCommentStatus(@Body() commentDTO: CommentDTO): any {
+        return this.adminService.changeCommentStatus(commentDTO);
     }
     // 删除评论
     @Delete(`comment`)
-    @ApiOperation({ summary: `展示 / 隐藏评论` })
+    @ApiOperation({ summary: `删除评论` })
     deleteComment(@Query(`commentId`) commentId: string): any {
         return this.adminService.deleteComment(commentId);
     }
     // 获取动态
     @Post(`status`)
     @ApiOperation({ summary: `获取动态列表` })
-    getStatus(@Body(`pageIndex`) pageIndex: number): any {
-        return this.adminService.getStatus(pageIndex);
+    getStatus(@Body() eventTrackDTO: EventTrackDTO): any {
+        return this.adminService.getStatus(eventTrackDTO);
     }
     // 创建动态
     @Put(`status`)
@@ -101,7 +103,7 @@ export class AdminController {
     // 获取埋点日志
     @Post(`event`)
     @ApiOperation({ summary: `获取埋点日志` })
-    getEventLog(@Body(`pageIndex`) pageIndex: number): any {
-        return this.adminService.getEventLog(pageIndex);
+    getEventLog(@Body() eventTrackDTO: EventTrackDTO): any {
+        return this.adminService.getEventLog(eventTrackDTO);
     }
 }

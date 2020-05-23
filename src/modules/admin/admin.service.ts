@@ -8,10 +8,14 @@ import { createSuccessResponse } from './../../helpers/createSuccessResponse';
 import {
     ArticleIndexDTO,
     ArticleDTO,
+    ArticleDetailsDTO,
+    CommentDTO,
     CommentIndexDTO,
-    StatusDTO
+    StatusDTO,
+    EventTrackDTO
 } from './admin.DTO';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
+import { EventTrackModel } from 'src/models/eventTrack.model';
 
 @Injectable()
 export class AdminService {
@@ -54,13 +58,15 @@ export class AdminService {
         }
     }
     // 获取文章详情
-    async getArticleDetails(id: string): Promise<ResponseDTO> {
+    async getArticleDetails(
+        @Query('articleId') articleId: string
+    ): Promise<ResponseDTO> {
         try {
-            const article = await ArticleModel.findById(id);
+            const article = await ArticleModel.findById(articleId);
             await eventLog(2005, 0);
             return createSuccessResponse({
                 article,
-                message: `获取文章列表成功`
+                message: `获取文章详情成功`
             });
         } catch (e) {
             await eventLog(2005, -1);
@@ -83,16 +89,16 @@ export class AdminService {
         }
     }
     // 修改文章
-    async updateArticle(articleDTO: ArticleDTO): Promise<ResponseDTO> {
-        const updateItem: ArticleDTO = {};
+    async updateArticle(articleDTO: ArticleDetailsDTO): Promise<ResponseDTO> {
+        const updateItem: ArticleDetailsDTO = {};
         // published: false 会被过滤
         Reflect.ownKeys(articleDTO).map(item => {
             (articleDTO[item] || typeof articleDTO[item] === `boolean`) &&
                 (updateItem[item] = articleDTO[item]);
         });
-        const { _id, ...others } = updateItem;
+        const { articleId, ...others } = updateItem;
         try {
-            const article = await ArticleModel.findById(_id);
+            const article = await ArticleModel.findById(articleId);
             for (const key in others) {
                 article[key] = others[key];
             }
@@ -105,7 +111,8 @@ export class AdminService {
         }
     }
     // 发布 / 撤回文章
-    async changeArticleStatus(articleId: string): Promise<ResponseDTO> {
+    async changeArticleStatus(articleDTO: ArticleDTO): Promise<ResponseDTO> {
+        const { articleId } = articleDTO;
         try {
             const article = await ArticleModel.findById(articleId);
             article.published = !article.published;
@@ -158,13 +165,14 @@ export class AdminService {
         }
     }
     // 隐藏 / 显示评论
-    async changeCommentStatus(commentId: string): Promise<ResponseDTO> {
+    async changeCommentStatus(commentDTO: CommentDTO): Promise<ResponseDTO> {
+        const { commentId } = commentDTO;
         try {
-            const comment = await CommentModel.findById({ commentId });
+            const comment = await CommentModel.findById(commentId);
             comment.published = !comment.published;
             await comment.save();
             await eventLog(3003, 0);
-            return createSuccessResponse();
+            return createSuccessResponse({ message: `显示/隐藏评论成功` });
         } catch (e) {
             await eventLog(3003, -1);
             return createFailResponse(e, `显示 / 隐藏评论失败`);
@@ -182,9 +190,8 @@ export class AdminService {
         }
     }
     // 获取动态
-    async getStatus(pageIndex: string | number): Promise<ResponseDTO> {
-        const pageSize = 10;
-        pageIndex = parseInt(pageIndex as string);
+    async getStatus(eventTrackDTO: EventTrackDTO): Promise<ResponseDTO> {
+        const { pageIndex, pageSize } = eventTrackDTO;
         try {
             const totalCount = await StatusModel.countDocuments(),
                 resultList = await StatusModel.find()
@@ -227,13 +234,12 @@ export class AdminService {
         }
     }
     // 获取埋点日志
-    async getEventLog(pageIndex: string | number): Promise<ResponseDTO> {
-        pageIndex = parseInt(pageIndex as string);
-        const pageSize = 10;
+    async getEventLog(eventTrackDTO: EventTrackDTO): Promise<ResponseDTO> {
+        const { pageSize, pageIndex } = eventTrackDTO;
         try {
-            const totalCount = await StatusModel.countDocuments(),
-                resultList = await StatusModel.find()
-                    .select([`updatedAt`, `eventCode`])
+            const totalCount = await EventTrackModel.countDocuments(),
+                resultList = await EventTrackModel.find()
+                    .select([`updatedAt`, `eventCode`, `eventStatus`])
                     .sort({ updatedAt: -1 })
                     .limit(pageSize)
                     .skip((pageIndex - 1) * pageSize);

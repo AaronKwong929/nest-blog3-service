@@ -31,47 +31,55 @@ export class ArticleDTO {
         required: true
     })
     @IsString()
-    _id?: string;
+    articleId?: string;
+}
 
+export class ArticleDetailsDTO extends ArticleDTO {
     @ApiProperty({
         description: `文章标题`,
         type: String,
-        required: false
+        required: false,
+        default: `新建文章`
     })
-    @IsString()
     title?: string;
 
     @ApiProperty({
         description: `分类`,
-        type: String,
         required: false
     })
-    @IsString()
-    type?: string;
+    type?: string | null;
 
     @ApiProperty({
         description: `标签`,
-        type: String,
         required: false
     })
-    @IsString()
-    tag?: string;
+    tag?: string | null;
 
     @ApiProperty({
         description: `内容`,
         type: String,
-        required: false
+        required: false,
+        default: ``
     })
     @IsString()
     content?: string;
 
+    // @ApiProperty({
+    //     description: `状态`,
+        
+    //     required: false
+    // })
+    // published?: boolean | null;
+}
+
+export class CommentDTO {
     @ApiProperty({
-        description: `状态`,
-        type: Boolean,
-        required: false
+        description: `评论ID`,
+        type: String,
+        required: true
     })
-    @IsBoolean()
-    published?: boolean;
+    @IsString()
+    commentId!: string;
 }
 
 export class CommentIndexDTO extends IndexDTO {
@@ -95,3 +103,5 @@ export class StatusDTO {
     @IsString()
     content!: string;
 }
+
+export class EventTrackDTO extends IndexDTO {}
