@@ -12,7 +12,10 @@ import {
 @ApiTags(`开放模块`)
 export class CommonController {
     constructor(private readonly commonService: CommonService) {}
-
+    @Get()
+    index() {
+        return `hello world`;
+    }
     @Post(`article`)
     @ApiOperation({ summary: `获取文章列表` })
     getArticleIndex(@Body() commonArticleIndexDTO: CommonArticleIndexDTO): any {

@@ -1,8 +1,15 @@
-FROM  node 
-ADD . /nest-blog/
-EXPOSE 3000
-WORKDIR /nest-blog
-RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
-RUN npm install --production
+FROM node:latest
+
+WORKDIR /projects/nest-blog-service
+
+COPY . .
+
+RUN npm install cnpm -g --registry=https://r.npm.taobao.org
+
+RUN cnpm install
+
+COPY . .
+
 RUN npm run build
-CMD [ "npm", "run", "start" ]
+
+CMD [ "npm", "run", "start:prod" ]
