@@ -8,7 +8,7 @@ export class Status extends Base {
     @prop({
         required: true
     })
-    content: string;
+    content!: string;
 }
 
 export const StatusModel = getModelForClass(Status);

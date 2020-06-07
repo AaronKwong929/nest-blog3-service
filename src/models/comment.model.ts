@@ -19,7 +19,7 @@ export class Comment extends Base {
     user!: string;
 
     @prop({ default: true })
-    published!: boolean;
+    published?: boolean;
 }
 
 export const CommentModel = getModelForClass(Comment);

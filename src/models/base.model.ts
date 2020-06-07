@@ -4,9 +4,9 @@ export abstract class Base {
     @prop({
         default: new Date()
     })
-    updatedAt: Date;
+    updatedAt?: Date;
     @prop({
         default: new Date()
     })
-    createdAt: Date;
+    createdAt?: Date;
 }

@@ -28,7 +28,7 @@ export class Article extends Base {
     @prop({
         default: false
     })
-    published!: boolean;
+    published?: boolean;
 }
 
 export const ArticleModel = getModelForClass(Article);
