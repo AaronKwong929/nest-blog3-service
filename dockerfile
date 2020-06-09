@@ -1,12 +1,10 @@
 FROM node:latest
 
-WORKDIR /projects/nest-blog-service
+EXPOSE 3000
+
+WORKDIR /project/blog-service
 
 COPY . .
-
-# RUN npm install cnpm -g --registry=https://r.npm.taobao.org
-
-# RUN cnpm install
 
 RUN npm config set registry https://registry.npm.taobao.org
 

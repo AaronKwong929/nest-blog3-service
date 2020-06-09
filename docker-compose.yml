@@ -1,0 +1,29 @@
+version: '3.7'
+services:
+    database:
+        container_name: database
+        image: mongo
+        command: [--auth]
+        restart: always
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: admin
+            MONGO_INITDB_ROOT_PASSWORD: 123456
+            TZ: Asia/Shanghai
+        volumes:
+            - ~/data/db:/data/db
+        networks:
+            - blog
+        ports:
+            - 27017:27017
+    service:
+        container_name: service
+        image: service
+        depends_on:
+            - database
+        ports:
+            - 3000:3000
+        networks:
+            - blog
+networks:
+    blog:
+        driver: bridge
