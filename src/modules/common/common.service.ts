@@ -93,7 +93,7 @@ export class CommonService {
                 .limit(5);
             return createSuccessResponse({
                 resultList,
-                message: `获取评论成功`
+                message: `获取动态成功`
             });
         } catch (e) {
             return createFailResponse(e, `获取状态失败`);
