@@ -24,6 +24,15 @@ services:
             - 3000:3000
         networks:
             - blog
+    front:
+        container_name: front
+        image: front
+        depends_on:
+            - database
+        ports:
+            - 8000:8000
+        networks:
+            - blog
     nginx:
         container_name: nginx
         image: nginx
