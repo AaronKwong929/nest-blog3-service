@@ -16,6 +16,7 @@ services:
         ports:
             - 27017:27017
     service:
+        build: ./blog-service
         container_name: service
         image: service
         depends_on:
@@ -25,6 +26,7 @@ services:
         networks:
             - blog
     front:
+        build: ./blog-front
         container_name: front
         image: front
         depends_on:
